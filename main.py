@@ -37,13 +37,18 @@ class SchoolManagementApp:
         self.text_widget = ctk.CTkTextbox(self.root, width=650, height=350)
         self.text_widget.pack(pady=10, padx=20)
         self.text_widget.configure(state="disabled")
+        
+        # Display students automatically on startup
+        self.root.after(100, self.view_students)
 
     def add_student_dialog(self):
         """Dialog to add a new student"""
         dialog = ctk.CTkToplevel(self.root)
         dialog.title("Add Student")
-        dialog.geometry("300x200")
+        dialog.geometry("300x250")
         dialog.resizable(False, False)
+        dialog.transient(self.root)
+        dialog.attributes('-topmost', True)
 
         ctk.CTkLabel(dialog, text="Name:").pack(pady=10)
         name_entry = ctk.CTkEntry(dialog, width=200)
@@ -69,7 +74,12 @@ class SchoolManagementApp:
             except Exception as e:
                 messagebox.showerror("Error", str(e))
 
-        ctk.CTkButton(dialog, text="Save", command=save).pack(pady=20)
+        # Button frame
+        button_frame = ctk.CTkFrame(dialog)
+        button_frame.pack(pady=20)
+        
+        ctk.CTkButton(button_frame, text="Save", command=save, width=80).grid(row=0, column=0, padx=5)
+        ctk.CTkButton(button_frame, text="Cancel", command=dialog.destroy, width=80).grid(row=0, column=1, padx=5)
 
     def view_students(self):
         """Display all students"""
@@ -82,6 +92,9 @@ class SchoolManagementApp:
             else:
                 for s in students:
                     self.append_text(f"ID: {s[0]}\nName: {s[1]}\nClass: {s[2]}\n{'-'*50}\n")
+            
+            # Auto-refresh on any list operation
+            self.text_widget.see(tk.END)
         except Exception as e:
             messagebox.showerror("Error", str(e))
 
@@ -91,6 +104,8 @@ class SchoolManagementApp:
         dialog.title("Search Student")
         dialog.geometry("300x150")
         dialog.resizable(False, False)
+        dialog.transient(self.root)
+        dialog.attributes('-topmost', True)
 
         ctk.CTkLabel(dialog, text="Enter student name:").pack(pady=10)
         search_entry = ctk.CTkEntry(dialog, width=200)
@@ -123,6 +138,8 @@ class SchoolManagementApp:
         dialog.title("Update Student")
         dialog.geometry("300x250")
         dialog.resizable(False, False)
+        dialog.transient(self.root)
+        dialog.attributes('-topmost', True)
 
         ctk.CTkLabel(dialog, text="Student ID:").pack(pady=10)
         id_entry = ctk.CTkEntry(dialog, width=200)
@@ -168,6 +185,8 @@ class SchoolManagementApp:
         dialog.title("Delete Student")
         dialog.geometry("300x150")
         dialog.resizable(False, False)
+        dialog.transient(self.root)
+        dialog.attributes('-topmost', True)
 
         ctk.CTkLabel(dialog, text="Enter Student ID:").pack(pady=10)
         id_entry = ctk.CTkEntry(dialog, width=200)
